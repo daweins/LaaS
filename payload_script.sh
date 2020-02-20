@@ -51,7 +51,7 @@ echo Moving Output
 echo Copying to BLOB    
 blobToken=`cat /etc/azblob/azblobsas`
 az storage blob upload-batch --account-name storannandale -s $tmpDir -d aksjmeter --pattern *.csv --sas-token $blobToken
-#echo Sleeping  minutes  to delay next run
-#sleep 1800
+echo Sleeping  minutes  to delay next run
+sleep 1800
 echo Signal completion
 echo Complete >> /tmp/isdone
