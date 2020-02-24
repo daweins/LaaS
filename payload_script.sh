@@ -30,12 +30,19 @@ do
         curl $targetIP/$targetPath -o /mnt/azure/curl$curTimeString.txt
     else
         echo Starting JMeter
-        if [ $ramp -ne 0 ]
+        if [ $numUsers -ne 0]
         then
-            echo "Ramping"
-            jMeterCmd="$jmeterPath -n -t \"/tmp/main_ramp.jmx\" $jmeterProps -JnumUsers=$numUsers -JtargetIP=\"$targetIP\" -JthroughputPerMin=$throughput -Jduration=$duration -JoutFile=\"$tmpDir$outFile\" -Jramp=$ramp -Jpath=\"$targetPath\"" 
+            if [ $ramp -ne 0 ]
+            then
+                echo "Ramping"
+                jMeterCmd="$jmeterPath -n -t \"/tmp/main_ramp.jmx\" $jmeterProps -JnumUsers=$numUsers -JtargetIP=\"$targetIP\" -JthroughputPerMin=$throughput -Jduration=$duration -JoutFile=\"$tmpDir$outFile\" -Jramp=$ramp -Jpath=\"$targetPath\"" 
+            else
+                echo "Not Ramping"
+                jMeterCmd="$jmeterPath -n -t \"/tmp/main.jmx\" $jmeterProps -JnumUsers=$numUsers -JtargetIP=\"$targetIP\" -JthroughputPerMin=$throughput -Jduration=$duration -JoutFile=\"$tmpDir$outFile\" -Jramp=$ramp -Jpath=\"$targetPath\"" 
+            fi
         else
-            jMeterCmd="$jmeterPath -n -t \"/tmp/main.jmx\" $jmeterProps -JnumUsers=$numUsers -JtargetIP=\"$targetIP\" -JthroughputPerMin=$throughput -Jduration=$duration -JoutFile=\"$tmpDir$outFile\" -Jramp=$ramp -Jpath=\"$targetPath\"" 
+            echo "0 users -> Sleeping"
+            sleep $duration
         fi
         echo $jMeterCmd
         eval $jMeterCmd
@@ -51,7 +58,7 @@ echo Moving Output
 echo Copying to BLOB    
 blobToken=`cat /etc/azblob/azblobsas`
 az storage blob upload-batch --account-name storannandale -s $tmpDir -d aksjmeter --pattern *.csv --sas-token $blobToken
-echo Sleeping  minutes  to delay next run
-sleep 1800
+#echo Sleeping  minutes  to delay next run
+#sleep 1800
 echo Signal completion
 echo Complete >> /tmp/isdone
