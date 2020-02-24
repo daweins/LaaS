@@ -44,8 +44,12 @@ do
             eval $jMeterCmd
 
         else
+            echo Copying to BLOB  during a pause  
+            blobToken=`cat /etc/azblob/azblobsas`
+            az storage blob upload-batch --account-name storannandale -s $tmpDir -d aksjmeter --pattern *.csv --sas-token $blobToken
             echo "0 users -> Sleeping"
             sleep $duration
+            find /tmp -name *.csv | xargs rm   #Remove these files that have been uploaded already
         fi
        fi
 
