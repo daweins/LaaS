@@ -30,7 +30,7 @@ do
         curl $targetIP/$targetPath -o /mnt/azure/curl$curTimeString.txt
     else
         echo Starting JMeter
-        if [ $numUsers -ne 0]
+        if [ $numUsers -ne 0 ]
         then
             if [ $ramp -ne 0 ]
             then
