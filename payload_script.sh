@@ -40,12 +40,13 @@ do
                 echo "Not Ramping"
                 jMeterCmd="$jmeterPath -n -t \"/tmp/main.jmx\" $jmeterProps -JnumUsers=$numUsers -JtargetIP=\"$targetIP\" -JthroughputPerMin=$throughput -Jduration=$duration -JoutFile=\"$tmpDir$outFile\" -Jramp=$ramp -Jpath=\"$targetPath\"" 
             fi
+            echo $jMeterCmd
+            eval $jMeterCmd
+
         else
             echo "0 users -> Sleeping"
             sleep $duration
         fi
-        echo $jMeterCmd
-        eval $jMeterCmd
        fi
 
 done
